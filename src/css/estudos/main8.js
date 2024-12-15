@@ -4,12 +4,6 @@ const fs = acode.require("fs");
 const fileList = acode.require("fileList");
 const { editor } = editorManager;
 
-
-
-
-
-
-
 class CssIntellisense {
  constructor() {
   this.cssClasses = new Set(); // Usar Set para evitar duplicatas
@@ -36,72 +30,49 @@ class CssIntellisense {
 
   // Escuta o evento de salvar arquivo
   editorManager.on("save", debouncedLoadCssFiles);
-  
-editorManager.on("save", file => this.loadCssFiles(file));
-  
-  editorManager.on("remove-file", file => {
-  if (this.fileCache.has(file.url)) {
-    this.fileCache.delete(file.url);
-    console.log(`Cache removido para o arquivo: ${file.url}`);
-  }
-});
-
-  editorManager.on("save", this.debounce(async file => {
-  await this.loadCssFiles(file);
-}, 500));
-  
  }
 
-
-
-
  // Verificar se há arquivos CSS no projeto e extrair classes e IDs
- async loadCssFiles(updatedFile = null) {
+ async loadCssFiles() {
   try {
-    if (updatedFile) { 
-      // Atualiza somente o arquivo específico
-      const fileContent = await this.getFileContent(updatedFile.url);
-      const classes = this.extractCssClasses(fileContent);
-      const ids = this.extractCssIds(fileContent);
+   const list = await fileList();
+   const cssFiles = list.filter(item => item.name.endsWith('.css') || item.name.endsWith('.scss'));
 
-      classes.forEach(cls => this.cssClasses.add(cls));
-      ids.forEach(id => this.cssIds.add(id));
-      return;
-    }
+   if (!cssFiles.length) {
+    console.warn("Nenhum arquivo CSS ou SCSS encontrado.");
+    return;
+   }
 
-    // Carrega todos os arquivos na inicialização
-    const list = await fileList();
-    const cssFiles = list.filter(item => item.name.endsWith('.css') || item.name.endsWith('.scss'));
-    this.cssClasses.clear();
-    this.cssIds.clear();
+   this.cssClasses.clear();
+   this.cssIds.clear();
 
-    await Promise.all(cssFiles.map(async cssFile => {
-      const fileContent = await this.getFileContent(cssFile.url);
-      if (!fileContent.trim()) return;
+   await Promise.all(cssFiles.map(async cssFile => {
+    const fileContent = await this.getFileContent(cssFile.url);
+    if (!fileContent.trim()) return; // Ignora arquivos vazios
 
-      const classes = this.extractCssClasses(fileContent);
-      const ids = this.extractCssIds(fileContent);
+    const classes = this.extractCssClasses(fileContent);
+    const ids = this.extractCssIds(fileContent);
 
-      classes.forEach(cls => this.cssClasses.add(cls));
-      ids.forEach(id => this.cssIds.add(id));
-    }));
+    classes.forEach(cls => this.cssClasses.add(cls));
+    ids.forEach(id => this.cssIds.add(id));
+   }));
+
+   this.provideSuggestions(this.cssClasses, this.cssIds);
 
   } catch (error) {
-    console.error('Erro ao carregar arquivos CSS:', error);
+   console.error('Erro ao carregar arquivos CSS:', error);
   }
-}
+ }
 
  // Função para extrair classes CSS
   extractCssClasses(cssContent) {
-  const classRegex = /(?:^|\s)\.([a-zA-Z0-9_-]+)|&\.([a-zA-Z0-9_-]+)/gm;
-  const classes = [];
+  const classRegex = /\.([a-zA-Z0-9_-]+)(?=\s*\{|\s)/gm;
+  const nestedClassRegex = /&\.([a-zA-Z0-9_-]+)/gm;
 
-  for (const match of cssContent.matchAll(classRegex)) {
-    if (match[1]) classes.push(match[1]); // Classes normais
-    if (match[2]) classes.push(match[2]); // Classes nested
-  }
+  const classes = [...cssContent.matchAll(classRegex)].map(match => match[1]);
+  const nestedClasses = [...cssContent.matchAll(nestedClassRegex)].map(match => match[1]);
 
-  return [...new Set(classes)]; // Remove duplicatas
+  return [...new Set([...classes, ...nestedClasses])]; // Remove duplicatas
 }
 
  // Função para extrair IDs CSS
@@ -118,16 +89,13 @@ editorManager.on("save", file => this.loadCssFiles(file));
 
  // Obter o conteúdo de um arquivo no projeto
  async getFileContent(url) {
-  try {
-    if (this.fileCache.has(url)) return this.fileCache.get(url);
-    const content = await fs(url).readFile('utf-8');
-    this.fileCache.set(url, content);
-    return content;
-  } catch (error) {
-    console.error(`Erro ao ler o arquivo: ${url}`, error);
-    return ''; // Retorna uma string vazia em caso de falha
+  if (this.fileCache.has(url)) {
+   return this.fileCache.get(url);
   }
-}
+  const content = await fs(url).readFile('utf-8');
+  this.fileCache.set(url, content);
+  return content;
+ }
 
  // Autocompletar com as classes CSS encontradas
  cssCompletions = {

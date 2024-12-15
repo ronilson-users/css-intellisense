@@ -1,16 +1,16 @@
 {
-  "id": "rsjRonilson.npm.intellisense",
-  "name": "npm-intellisense",
+  "id": "rsjronilson.css.intellisense",
+  "name": " Acode Css Intellisense",
   "main": "dist/main.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "readme": "readme.md",
   "icon": "icon.png",
   "files": [],
   "minVersionCode": 290,
   "price": 0,
   "author": {
-    "name": "Npm Intellisense",
-    "email": "",
-    "github": ""
+    "name": "rsjRonilson",
+    "email": "ronilson.stos@gmail.com",
+    "github": "ronilson.users"
   }
 }
