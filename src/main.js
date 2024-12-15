@@ -4,12 +4,6 @@ const fs = acode.require("fs");
 const fileList = acode.require("fileList");
 const { editor } = editorManager;
 
-
-
-
-
-
-
 class CssIntellisense {
  constructor() {
   this.cssClasses = new Set(); // Usar Set para evitar duplicatas
@@ -36,20 +30,20 @@ class CssIntellisense {
 
   // Escuta o evento de salvar arquivo
   editorManager.on("save", debouncedLoadCssFiles);
-  
-editorManager.on("save", file => this.loadCssFiles(file));
-  
+
+  editorManager.on("save", file => this.loadCssFiles(file));
+
   editorManager.on("remove-file", file => {
-  if (this.fileCache.has(file.url)) {
+   if (this.fileCache.has(file.url)) {
     this.fileCache.delete(file.url);
     console.log(`Cache removido para o arquivo: ${file.url}`);
-  }
-});
+   }
+  });
 
   editorManager.on("save", this.debounce(async file => {
-  await this.loadCssFiles(file);
-}, 500));
-  
+   await this.loadCssFiles(file);
+  }, 500));
+
  }
 
 
@@ -58,57 +52,57 @@ editorManager.on("save", file => this.loadCssFiles(file));
  // Verificar se há arquivos CSS no projeto e extrair classes e IDs
  async loadCssFiles(updatedFile = null) {
   try {
-    if (updatedFile) { 
-      // Atualiza somente o arquivo específico
-      const fileContent = await this.getFileContent(updatedFile.url);
-      const classes = this.extractCssClasses(fileContent);
-      const ids = this.extractCssIds(fileContent);
+   if (updatedFile) {
+    // Atualiza somente o arquivo específico
+    const fileContent = await this.getFileContent(updatedFile.url);
+    const classes = this.extractCssClasses(fileContent);
+    const ids = this.extractCssIds(fileContent);
 
-      classes.forEach(cls => this.cssClasses.add(cls));
-      ids.forEach(id => this.cssIds.add(id));
-      return;
-    }
+    classes.forEach(cls => this.cssClasses.add(cls));
+    ids.forEach(id => this.cssIds.add(id));
+    return;
+   }
 
-    // Carrega todos os arquivos na inicialização
-    const list = await fileList();
-    const cssFiles = list.filter(item => item.name.endsWith('.css') || item.name.endsWith('.scss'));
-    this.cssClasses.clear();
-    this.cssIds.clear();
+   // Carrega todos os arquivos na inicialização
+   const list = await fileList();
+   const cssFiles = list.filter(item => item.name.endsWith('.css') || item.name.endsWith('.scss'));
+   this.cssClasses.clear();
+   this.cssIds.clear();
 
-    await Promise.all(cssFiles.map(async cssFile => {
-      const fileContent = await this.getFileContent(cssFile.url);
-      if (!fileContent.trim()) return;
+   await Promise.all(cssFiles.map(async cssFile => {
+    const fileContent = await this.getFileContent(cssFile.url);
+    if (!fileContent.trim()) return;
 
-      const classes = this.extractCssClasses(fileContent);
-      const ids = this.extractCssIds(fileContent);
+    const classes = this.extractCssClasses(fileContent);
+    const ids = this.extractCssIds(fileContent);
 
-      classes.forEach(cls => this.cssClasses.add(cls));
-      ids.forEach(id => this.cssIds.add(id));
-    }));
+    classes.forEach(cls => this.cssClasses.add(cls));
+    ids.forEach(id => this.cssIds.add(id));
+   }));
 
   } catch (error) {
-    console.error('Erro ao carregar arquivos CSS:', error);
+   console.error('Erro ao carregar arquivos CSS:', error);
   }
-}
+ }
 
  // Função para extrair classes CSS
-  extractCssClasses(cssContent) {
+ extractCssClasses(cssContent) {
   const classRegex = /(?:^|\s)\.([a-zA-Z0-9_-]+)|&\.([a-zA-Z0-9_-]+)/gm;
   const classes = [];
 
   for (const match of cssContent.matchAll(classRegex)) {
-    if (match[1]) classes.push(match[1]); // Classes normais
-    if (match[2]) classes.push(match[2]); // Classes nested
+   if (match[1]) classes.push(match[1]); // Classes normais
+   if (match[2]) classes.push(match[2]); // Classes nested
   }
 
   return [...new Set(classes)]; // Remove duplicatas
-}
+ }
 
  // Função para extrair IDs CSS
-  extractCssIds(cssContent) {
+ extractCssIds(cssContent) {
   const idRegex = /#([a-zA-Z0-9_-]+)(?=\s*\{|\s)/gm;
   return [...cssContent.matchAll(idRegex)].map(match => match[1]);
-}
+ }
 
  // Função para fornecer sugestões (implementar conforme necessário)
  provideSuggestions(classes, ids) {
@@ -119,15 +113,15 @@ editorManager.on("save", file => this.loadCssFiles(file));
  // Obter o conteúdo de um arquivo no projeto
  async getFileContent(url) {
   try {
-    if (this.fileCache.has(url)) return this.fileCache.get(url);
-    const content = await fs(url).readFile('utf-8');
-    this.fileCache.set(url, content);
-    return content;
+   if (this.fileCache.has(url)) return this.fileCache.get(url);
+   const content = await fs(url).readFile('utf-8');
+   this.fileCache.set(url, content);
+   return content;
   } catch (error) {
-    console.error(`Erro ao ler o arquivo: ${url}`, error);
-    return ''; // Retorna uma string vazia em caso de falha
+   console.error(`Erro ao ler o arquivo: ${url}`, error);
+   return ''; // Retorna uma string vazia em caso de falha
   }
-}
+ }
 
  // Autocompletar com as classes CSS encontradas
  cssCompletions = {
@@ -137,7 +131,7 @@ editorManager.on("save", file => this.loadCssFiles(file));
     value: className,
     score: 1000,
     meta: "class",
-    icon: "ace_completion-icon ace_class"
+    icon: "ace_completion-icon ace_classe"
    }));
 
    const idSuggestions = [...this.cssIds].map(id => ({
@@ -145,7 +139,7 @@ editorManager.on("save", file => this.loadCssFiles(file));
     value: id,
     score: 1000,
     meta: "id",
-    icon: "ace_completion-icon ace_id"
+    icon: "ace_completion-icon ace_classe"
    }));
 
    const suggestions = [
