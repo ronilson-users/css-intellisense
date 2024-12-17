@@ -39,6 +39,7 @@ class CssIntellisense {
     console.log(`Cache removido para o arquivo: ${file.url}`);
    }
   });
+  
 
   editorManager.on("save", this.debounce(async file => {
    await this.loadCssFiles(file);
@@ -131,7 +132,7 @@ class CssIntellisense {
     value: className,
     score: 1000,
     meta: "class",
-    icon: "ace_completion-icon ace_classe"
+    icon: "ace_completion-icon ace_class"
    }));
 
    const idSuggestions = [...this.cssIds].map(id => ({
@@ -139,7 +140,7 @@ class CssIntellisense {
     value: id,
     score: 1000,
     meta: "id",
-    icon: "ace_completion-icon ace_classe"
+    icon: "ace_completion-icon ace_class"
    }));
 
    const suggestions = [

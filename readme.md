@@ -1,6 +1,9 @@
-# CSS Intellisense Plugin
 
-O **CSS Intellisense Plugin** é um plugin que oferece funcionalidades de autocompletar para classes e IDs CSS no editor de código. Ele analisa arquivos CSS e SCSS no projeto e fornece sugestões de autocompletar para classes e IDs ao trabalhar com arquivos HTML.
+## Intellisense para classes Css e IDs em HTML
+
+![logo](https://i.ibb.co/xSmW5qv/logo-css-intellisense.png)
+
+O **Intellisense** é um plugin que oferece funcionalidades de autocompletar para classes e IDs CSS no editor de código. Ele analisa arquivos CSS e SCSS no projeto e fornece sugestões de autocompletar para classes e IDs ao trabalhar com arquivos HTML.
 
 ## Funcionalidades
 
@@ -19,3 +22,8 @@ O **CSS Intellisense Plugin** é um plugin que oferece funcionalidades de autoco
     background-color: blue;
   }
 }
+
+```
+
+### Contribuições
+- Você pode solicitar novos recursos e contribuir para o desenvolvimento da extensão em seu repositório no GitHub . Procure um problema no qual você esteja interessado em trabalhar, comente sobre ele para me informar que você está trabalhando nele e envie sua solicitação de pull! :D
