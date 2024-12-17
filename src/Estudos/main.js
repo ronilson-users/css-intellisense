@@ -27,17 +27,11 @@ class CssIntellisense {
 
   // Escuta o evento de troca de arquivo
   editorManager.on("switch-file", debouncedLoadCssFiles);
- 
 
   // Escuta o evento de salvar arquivo
-  editorManager.on("save-file", debouncedLoadCssFiles);
+  editorManager.on("save", debouncedLoadCssFiles);
 
-
-
-  editorManager.on("save-file", file => this.loadCssFiles(file)
-
-  );
-
+  // editorManager.on("save", file => this.loadCssFiles(file));
 
   editorManager.on("remove-file", file => {
    if (this.fileCache.has(file.url)) {
@@ -45,19 +39,16 @@ class CssIntellisense {
     console.log(`Cache removido para o arquivo: ${file.url}`);
    }
   });
+  
 
-
-  editorManager.on("save-file", this.debounce(async file => {
-   // Remove do cache
-   if (this.fileCache.has(file.url)) {
-    this.fileCache.delete(file.url);
-   }
-
-   // Recarrega o conteúdo
+  editorManager.on("save", this.debounce(async file => {
    await this.loadCssFiles(file);
   }, 500));
 
  }
+
+
+
 
  // Verificar se há arquivos CSS no projeto e extrair classes e IDs
  async loadCssFiles(updatedFile = null) {
@@ -66,10 +57,6 @@ class CssIntellisense {
     // Atualiza somente o arquivo específico
     const fileContent = await this.getFileContent(updatedFile.url);
     const classes = this.extractCssClasses(fileContent);
-
-   
-    console.log("updatedFile recebido:", updatedFile);
-
     const ids = this.extractCssIds(fileContent);
 
     classes.forEach(cls => this.cssClasses.add(cls));
@@ -80,10 +67,6 @@ class CssIntellisense {
    // Carrega todos os arquivos na inicialização
    const list = await fileList();
    const cssFiles = list.filter(item => item.name.endsWith('.css') || item.name.endsWith('.scss'));
-
-   console.log('list:',list );
-
-
    this.cssClasses.clear();
    this.cssIds.clear();
 
@@ -103,7 +86,6 @@ class CssIntellisense {
   }
  }
 
-
  // Função para extrair classes CSS
  extractCssClasses(cssContent) {
   const classRegex = /(?:^|\s)\.([a-zA-Z0-9_-]+)|&\.([a-zA-Z0-9_-]+)/gm;
@@ -120,25 +102,21 @@ class CssIntellisense {
  // Função para extrair IDs CSS
  extractCssIds(cssContent) {
   const idRegex = /#([a-zA-Z0-9_-]+)(?=\s*\{|\s)/gm;
-
-  
-
   return [...cssContent.matchAll(idRegex)].map(match => match[1]);
  }
 
- 
+ // Função para fornecer sugestões (implementar conforme necessário)
+ provideSuggestions(classes, ids) {
+  console.log('Classes CSS disponíveis para sugestões:', [...classes]);
+  console.log('IDs CSS disponíveis para sugestões:', [...ids]);
+ }
+
  // Obter o conteúdo de um arquivo no projeto
  async getFileContent(url) {
-  if (!url) {
-   
-   console.log('url', url);
-   console.error("Erro: URL do arquivo não foi fornecida.");
-   return '';
-  }
-
   try {
+   if (this.fileCache.has(url)) return this.fileCache.get(url);
    const content = await fs(url).readFile('utf-8');
-   this.fileCache.set(url, content); // Atualiza o cache
+   this.fileCache.set(url, content);
    return content;
   } catch (error) {
    console.error(`Erro ao ler o arquivo: ${url}`, error);
@@ -187,13 +165,8 @@ class CssIntellisense {
  async destroy() {
   editor.completers = editor.completers.filter(completer => completer !== this.cssCompletions);
   console.log('Plugin CSS Intellisense destruído');
-
-  await this.init()
-  console.log("inicializado");
-  alert(inicializado)
  }
 }
-
 
 // Inicializar o plugin
 if (window.acode) {
