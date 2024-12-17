@@ -26,22 +26,22 @@ Example of simple CSS classes and IDs for a button and a container:
 ```css
 /* Basic CSS */
 .button {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
+background-color: #4CAF50;
+color: white;
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
 }
 
 .container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+width: 100%;
+max-width: 1200px;
+margin: 0 auto;
 }
 
 #main-title {
-  font-size: 24px;
-  color: #333;
+font-size: 24px;
+color: #333;
 }
 
 /* Utility CSS */
@@ -55,9 +55,9 @@ Example of simple CSS classes and IDs for a button and a container:
 /* Example of nested SCSS classes: */
 
 .btn {
-  &-primary {
-    background-color: blue;
-  }
+&-primary {
+background-color: blue;
+}
 }
 
 ```
@@ -69,21 +69,37 @@ Example of simple CSS classes and IDs for a button and a container:
 You can request new features or contribute to the extension's development on the GitHub [repository]("https://github.com/ronilson-users/css-intellisense.git")
 Find an issue you’d like to work on, comment to let me know you're taking it, and submit your pull request! :smile:
 
+--
 
----
 
 ## Updates
 
 <details>
-  <summary><strong>v1.0.1</strong></summary>Initial release with support for CSS and SCSS files.
+ <summary>
+  <strong>v1.0.1</strong>
+ </summary>
+ 
+- Initial release with support for CSS and SCSS files.  
+- Autocomplete for classes and IDs in HTML.
 
-Autocomplete for classes and IDs in HTML.
+</details>
 
+<details>
+ <summary>
+  <strong>v1.0.2</strong>
+ </summary>
+ 
+- Fixed an issue where newly added CSS classes were not being updated in the suggestions.  
+- Improved overall performance and accuracy of the autocomplete suggestions.
 
-</details><details>
-  <summary><strong>v1.0.2</strong></summary>Fixed an issue where newly added CSS classes were not being updated in the suggestions.
+</details>
 
-Improved overall performance and accuracy of the autocomplete suggestions.
-
+<details>
+ <summary>
+  <strong>v1.0.3</strong>
+ </summary>
+ 
+- Fixed minor bugs.  
+- Removed unnecessary logs for a cleaner output.
 
 </details>
