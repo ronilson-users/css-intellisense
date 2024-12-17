@@ -68,8 +68,6 @@ class CssIntellisense {
     const classes = this.extractCssClasses(fileContent);
 
    
-    console.log("updatedFile recebido:", updatedFile);
-
     const ids = this.extractCssIds(fileContent);
 
     classes.forEach(cls => this.cssClasses.add(cls));
@@ -81,8 +79,7 @@ class CssIntellisense {
    const list = await fileList();
    const cssFiles = list.filter(item => item.name.endsWith('.css') || item.name.endsWith('.scss'));
 
-   console.log('list:',list );
-
+  
 
    this.cssClasses.clear();
    this.cssIds.clear();
@@ -131,7 +128,7 @@ class CssIntellisense {
  async getFileContent(url) {
   if (!url) {
    
-   console.log('url', url);
+  
    console.error("Erro: URL do arquivo não foi fornecida.");
    return '';
   }
@@ -141,7 +138,7 @@ class CssIntellisense {
    this.fileCache.set(url, content); // Atualiza o cache
    return content;
   } catch (error) {
-   console.error(`Erro ao ler o arquivo: ${url}`, error);
+ 
    return ''; // Retorna uma string vazia em caso de falha
   }
  }
@@ -188,9 +185,6 @@ class CssIntellisense {
   editor.completers = editor.completers.filter(completer => completer !== this.cssCompletions);
   console.log('Plugin CSS Intellisense destruído');
 
-  await this.init()
-  console.log("inicializado");
-  alert(inicializado)
  }
 }
 
